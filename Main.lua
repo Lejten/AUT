@@ -117,6 +117,7 @@ end
 print("hi")
 game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
 repeat wait() until chr:FindFirstChild("Torso")
+print("Activated Cycle!")
 CheckIfFull()
 if game.PlaceId == 7425232362 then
      noclip()
