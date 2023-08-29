@@ -1,3 +1,4 @@
+repeat wait() until game.Players.LocalPlayer
 local mode = nil
 local PauseWhenFull = true
 local unboxer = true
