@@ -1,5 +1,6 @@
 local mode = nil
 local PauseWhenFull = true
+local unbox = true
 
 -----------------functions
 function getcapacity()
@@ -11,6 +12,10 @@ end
 
 
 ----------------------------------------------------------------------------------------------------------------------
+
+
+
+
 
 function grinder()
  task.spawn(function()
@@ -72,6 +77,7 @@ function unbox()
     [1] = "ItemInventory"
 }
 local invtable = game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RF"):WaitForChild("GetItems"):InvokeServer(unpack(args))
+wait(1)
 for i,v in pairs(invtable) do
     if v["_DisplayName"] == "1x Skin Crate" then
     print("this is a crate")
@@ -85,20 +91,36 @@ for i,v in pairs(invtable) do
     end
 end
 end
---------------------------------------Main
-print("hi")
-game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
-repeat wait() until chr:FindFirstChild("Torso")
-     local capacity = getcapacity()
+
+
+
+--------------------------------------------------------------
+
+
+function CheckIfFull()
+	     local capacity = getcapacity()
      if capacity["CurrentCapacity"] == capacity["MaxCapacity"] and PauseWhenFull == true then 
             if game.PlaceId ~= 6846458508 then
                 local TeleportService = game:GetService("TeleportService")
                 TeleportService:Teleport(6846458508,game.Players.LocalPlayer)
-            else
+            elseif unbox == true
+	    getcapacity()
+	    wait()
             unbox()
             end
          return end
+end
+
+
+
+--------------------------------------Main
+print("hi")
+game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
+repeat wait() until chr:FindFirstChild("Torso")
+CheckIfFull()
+if game.PlaceId == 7425232362 then
      noclip()
   wait(2)
   grinder()
+end
 end)
