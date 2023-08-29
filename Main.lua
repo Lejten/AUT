@@ -1,6 +1,6 @@
 local mode = nil
 local PauseWhenFull = true
-local unbox = true
+local unboxer = true
 
 -----------------functions
 function getcapacity()
@@ -103,12 +103,23 @@ function CheckIfFull()
             if game.PlaceId ~= 6846458508 then
                 local TeleportService = game:GetService("TeleportService")
                 TeleportService:Teleport(6846458508,game.Players.LocalPlayer)
-            elseif unbox == true then
+            else
+        if unboxer == true then
+            print("unboxing")
 	    getcapacity()
 	    wait()
             unbox()
+        end    
             end
-         return end
+         return 
+    else
+        if unboxer == true then
+        print("unboxing")
+	    getcapacity()
+	    wait()
+        unbox()
+        end    
+    end
 end
 
 
@@ -117,7 +128,6 @@ end
 print("hi")
 game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
 repeat wait() until chr:FindFirstChild("Torso")
-print("Activated Cycle!")
 CheckIfFull()
 if game.PlaceId == 7425232362 then
      noclip()
