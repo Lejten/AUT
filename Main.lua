@@ -1,5 +1,5 @@
 local mode = nil
-
+local PauseWhenFull = true
 
 -----------------functions
 function getcapacity()
@@ -90,7 +90,14 @@ print("hi")
 game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
 repeat wait() until chr:FindFirstChild("Torso")
      local capacity = getcapacity()
-     if capacity["CurrentCapacity"] == capacity["MaxCapacity"] then return end
+     if capacity["CurrentCapacity"] == capacity["MaxCapacity"] and PauseWhenFull == true then 
+            if game.PlaceId ~= 6846458508 then
+                local TeleportService = game:GetService("TeleportService")
+                TeleportService:Teleport(6846458508,game.Players.LocalPlayer)
+            else
+            unbox()
+            end
+         return end
      noclip()
   wait(2)
   grinder()
