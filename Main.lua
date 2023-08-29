@@ -103,7 +103,7 @@ function CheckIfFull()
             if game.PlaceId ~= 6846458508 then
                 local TeleportService = game:GetService("TeleportService")
                 TeleportService:Teleport(6846458508,game.Players.LocalPlayer)
-            elseif unbox == true
+            elseif unbox == true then
 	    getcapacity()
 	    wait()
             unbox()
