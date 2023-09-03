@@ -1,7 +1,22 @@
 repeat wait() until game.Players.LocalPlayer
-local mode = nil
-local PauseWhenFull = true
-local unboxer = true
+local HttpService = game:service('HttpService')
+local scriptdata = nil
+if isfile("AutSettings.lejten") then
+    scriptdata = HttpService:JSONDecode(readfile("AutSettings.lejten"))
+else
+    scriptdata = {
+        Enabled = false,
+        Mode = "money",
+        Repeat = false,
+        UnboxCrates = true
+    }
+    JSON = HttpService:JSONEncode(scriptdata)
+    writefile("AutSettings.lejten",JSON)
+end    
+local looping = scriptdata["Enabled"]
+local mode = scriptdata["Mode"]
+local RepeatSelf = scriptdata["Repeat"]
+local unboxer = scriptdata["UnboxCrates"]
 
 -----------------functions
 function getcapacity()
@@ -11,6 +26,41 @@ local args = {
 return game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RF"):WaitForChild("GetCapacity"):InvokeServer(unpack(args))
 end
 
+-------------------------------
+local autoclicker = false
+function autoclicker()
+task.spawn(function()
+while autoclicker == true do
+task.wait(.1)
+    local args = {
+    [1] = "MouseButton1"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput"):InvokeServer(unpack(args))
+end
+end)
+end
+
+----------------------------------anti afk
+function antiafk()
+	local GC = getconnections or get_signal_cons
+	if GC then
+		for i,v in pairs(GC(game.Players.LocalPlayer.Idled)) do
+			if v["Disable"] then
+				v["Disable"](v)
+			elseif v["Disconnect"] then
+				v["Disconnect"](v)
+			end
+		end
+	else
+		game.Players.LocalPlayer.Idled:Connect(function()
+			local VirtualUser = game:GetService("VirtualUser")
+			VirtualUser:CaptureController()
+			VirtualUser:ClickButton2(Vector2.new())
+		end)
+	end
+end
+
+
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -18,7 +68,7 @@ end
 
 
 
-function grinder()
+function grinder(a,b)
  task.spawn(function()
 	local speaker = game.Players.LocalPlayer
 	function getRoot(char)
@@ -43,12 +93,12 @@ function grinder()
 			BV.Velocity = Vector3.new(0,0,52)
             wait(1)
             if char and getRoot(char) then
-		        getRoot(char).CFrame = CFrame.new(-251, 12, 53)
+		        getRoot(char).CFrame = CFrame.new(-251, -14, 53)
             end
             end
 		end)
 	if char and getRoot(char) then
-		getRoot(char).CFrame = CFrame.new(-251, 12, 53)
+		getRoot(char).CFrame = CFrame.new(-251, -14, 53)
 	end
 end)
 end
@@ -126,13 +176,23 @@ end
 
 
 --------------------------------------Main
-print("hi")
+print("Enabled!")
+antiafk()
 game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
 repeat wait() until chr:FindFirstChild("Torso")
 CheckIfFull()
 if game.PlaceId == 7425232362 then
-     noclip()
-  wait(2)
-  grinder()
+    local position = nil
+    if mode == "money" then
+        if autoclicker == false then
+            autoclicker = true
+            autoclicker()
+        end
+        position = CFrame.new(-251, -14, 53)
+    else
+    position = CFrame.new(-251, 12, 53)
+    end
+    noclip()
+    grinder()
 end
 end)
