@@ -27,12 +27,12 @@ return game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):Wa
 end
 
 -------------------------------
-local autoclicker = false
+local autoclicking = false
 function autoclicker()
 task.spawn(function()
-while autoclicker == true do
+while autoclicking == true do
 task.wait(.1)
-    local args = {
+local args = {
     [1] = "MouseButton1"
 }
 game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput"):InvokeServer(unpack(args))
@@ -184,8 +184,8 @@ CheckIfFull()
 if game.PlaceId == 7425232362 then
     local position = nil
     if mode == "money" then
-        if autoclicker == false then
-            autoclicker = true
+        if autoclicking == false then
+            autoclicking = true
             autoclicker()
         end
         position = CFrame.new(-251, -14, 53)
