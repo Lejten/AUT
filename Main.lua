@@ -69,6 +69,22 @@ end
 
 
 function grinder(a,b)
+    movement = true
+    task.spawn(function()
+    local wavetext = game.Players.LocalPlayer.PlayerGui.WaveModeUI.WaveStatus.Defeated.Label.Text
+        while wait(8) do
+            if wavetext == game.Players.LocalPlayer.PlayerGui.WaveModeUI.WaveStatus.Defeated.Label.Text then
+                task.spawn(function()
+                    local char = game.Players.LocalPlayer.Character
+                    movement = false
+                    char.HumanoidRootPart.CFrame = CFrame.new(-251, -14, 53)
+                    wait(1)
+                    movement = true
+                end)
+            end
+            wavetext = game.Players.LocalPlayer.PlayerGui.WaveModeUI.WaveStatus.Defeated.Label.Text    
+        end
+    end)
  task.spawn(function()
 	local speaker = game.Players.LocalPlayer
 	function getRoot(char)
@@ -92,12 +108,12 @@ function grinder(a,b)
 			wait(1)
 			BV.Velocity = Vector3.new(0,0,52)
             wait(1)
-            if char and getRoot(char) then
+            if char and getRoot(char) and movement == true then
 		        getRoot(char).CFrame = CFrame.new(-251, -14, 53)
             end
             end
 		end)
-	if char and getRoot(char) then
+	if char and getRoot(char) and movement == true then
 		getRoot(char).CFrame = CFrame.new(-251, -14, 53)
 	end
 end)
