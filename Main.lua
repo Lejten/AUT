@@ -1,6 +1,8 @@
 repeat wait() until game.Players.LocalPlayer
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local HttpService = game:service('HttpService')
 local scriptdata = nil
+local lockedin = false
 if isfile("AutSettings.lejten") then
     scriptdata = HttpService:JSONDecode(readfile("AutSettings.lejten"))
 else
@@ -8,15 +10,27 @@ else
         Enabled = false,
         Mode = "money",
         Repeat = false,
-        UnboxCrates = true
+        UnboxCrates = true,
+        LastPlace = nil
     }
     JSON = HttpService:JSONEncode(scriptdata)
     writefile("AutSettings.lejten",JSON)
 end    
-local looping = scriptdata["Enabled"]
-local mode = scriptdata["Mode"]
-local RepeatSelf = scriptdata["Repeat"]
-local unboxer = scriptdata["UnboxCrates"]
+local taglines = {"Kur fucking sucks",
+"BetterBuffUmbra",
+"I_Love_Timestop_Stands",
+"Puddest is gone! WE CELEBRATE",
+"Hadopelagenix eats rats",
+"sini pee lover",
+"obese antone",
+"time to make gazillions 🤑",
+"ascensions are fair",
+"99.99% safe, not including trojans",
+"made in poland"
+}
+
+
+
 
 -----------------functions
 function getcapacity()
@@ -25,6 +39,32 @@ local args = {
 }
 return game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RF"):WaitForChild("GetCapacity"):InvokeServer(unpack(args))
 end
+
+
+function makelobby()
+    if game.PlaceId == 8008202756 then
+        if game.Players.LocalPlayer.PlayerGui.MainMenu.Menus.Code.Text == "NULL" then
+        game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MatchmakeService"):WaitForChild("RF"):WaitForChild("RequestPrivateLobby"):InvokeServer()
+        end
+    end
+end
+function startwave()
+    local u3 = game.ReplicatedStorage.Remotes.TeamEvent
+    u3:FireServer("CreateTeam", {GameMode = "Wavemode", GameType = "Casual"})
+    wait(1)
+    game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("MatchmakeService"):WaitForChild("RF"):WaitForChild("StartQueue"):InvokeServer()
+end
+function teleport(v)
+    local TeleportService = game:GetService("TeleportService")
+    if v == "maingame" then
+        TeleportService:Teleport(6846458508,game.Players.LocalPlayer)
+    elseif v == "wave" then
+        TeleportService:Teleport(8008202756,game.Players.LocalPlayer)
+    end
+end
+
+
+
 
 -------------------------------
 local autoclicking = false
@@ -166,12 +206,11 @@ end
 
 function CheckIfFull()
 	     local capacity = getcapacity()
-     if capacity["CurrentCapacity"] == capacity["MaxCapacity"] and PauseWhenFull == true then 
+     if capacity["CurrentCapacity"] == capacity["MaxCapacity"] then 
             if game.PlaceId ~= 6846458508 then
-                local TeleportService = game:GetService("TeleportService")
-                TeleportService:Teleport(6846458508,game.Players.LocalPlayer)
+                teleport("maingame")
             else
-        if unboxer == true then
+        if scriptdata["UnboxCrates"] == true then
             print("unboxing")
 	    getcapacity()
 	    wait()
@@ -180,7 +219,7 @@ function CheckIfFull()
             end
          return 
     else
-        if unboxer == true then
+        if scriptdata["UnboxCrates"] == true then
         print("unboxing")
 	    getcapacity()
 	    wait()
@@ -191,24 +230,137 @@ end
 
 
 
---------------------------------------Main
-print("Enabled!")
-antiafk()
-game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
-repeat wait() until chr:FindFirstChild("Torso")
-CheckIfFull()
-if game.PlaceId == 7425232362 then
-    local position = nil
-    if mode == "money" then
-        if autoclicking == false then
-            autoclicking = true
-            autoclicker()
-        end
-        position = CFrame.new(-251, -14, 53)
-    else
-    position = CFrame.new(-251, 12, 53)
-    end
-    noclip()
-    grinder()
+function onspawn(chr)
+            if scriptdata["UnboxCrates"] == true then
+                CheckIfFull()
+            end
+            repeat wait() until chr:FindFirstChild("Torso")
+            if lockedin == false then lockedin = true end
+                if game.PlaceId == 7425232362 then
+                    local position = nil
+                    if scriptdata["Mode"] == "money" then
+                        if autoclicking == false then
+                            autoclicking = true
+                            autoclicker()
+                        end
+                        position = CFrame.new(-251, -14, 53)
+                    else
+                        position = CFrame.new(-251, 12, 53)
+                    end
+                    noclip()
+                    grinder()
+                end    
 end
+----------------------------------------
+function loop()
+        print("Enabled!")
+        if game.PlaceId == 8008202756 then
+        if scriptdata["LastPlace"] ~= 7425232362 or scriptdata["Repeat"] == true then
+            if game.Players.LocalPlayer.PlayerGui:WaitForChild("MainMenu"):WaitForChild("Menus"):WaitForChild("Code").Text == "NULL" then
+                    print("making a fresh lobby")
+                    makelobby()
+                else
+                    print("starting wave")
+                    startwave()
+            end
+        end
+        elseif game.PlaceId == 7425232362 then
+            task.spawn(function()
+                while lockedin == false do
+                    game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("WaveModeService"):WaitForChild("RF"):WaitForChild("LockAbility"):InvokeServer(8888)
+                    wait(.3)
+                end
+            end)
+        elseif game.PlaceId ~= 6846458508 then
+            if scriptdata["LastPlace"] ~= 7425232362 or scriptdata["Repeat"] == true then
+                teleport("wave")
+            end    
+        end 
+        if game.Players.LocalPlayer.Character then
+            onspawn(game.Players.LocalPlayer.Character)
+        end
+        game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
+        onspawn(chr)
+        end)
+end
+
+
+
+--------------------------------------Main
+local currenttask = nil
+local title = "Lejten AUT GUI: "..taglines[math.random(1,#taglines)]
+local Window = Library.CreateLib(title, "Synapse")
+local tab = Window:NewTab("Farm")
+local stab = Window:NewTab("Settings")
+local Section = tab:NewSection("WaveMode farm")
+local setsection = stab:NewSection("WaveMode Settings")
+local button
+button = Section:NewButton("Toggle Script", "ButtonInfo", function()
+    if scriptdata["Enabled"] == true then
+        if currenttask ~= nil then
+            task.cancel(currenttask)
+        end
+        scriptdata["Enabled"] = false
+        button:UpdateButton("Enable Script")
+    else
+        currenttask = task.spawn(function()
+        loop()
+    end)
+        scriptdata["Enabled"] = true
+        button:UpdateButton("Disable script")
+    end
+    JSON = HttpService:JSONEncode(scriptdata)
+    writefile("AutSettings.lejten",JSON)
 end)
+  if scriptdata["Enabled"] == true then
+    button:UpdateButton("Disable Script")
+    else
+     button:UpdateButton("Enable Script")
+  end
+
+toggle = setsection:NewToggle("Toggle Repeat", "Toggles Script Repeating itself", function(val)
+    if val == false then
+        scriptdata["Repeat"] = false
+    else
+        scriptdata["Repeat"] = true
+    end
+    JSON = HttpService:JSONEncode(scriptdata)
+    writefile("AutSettings.lejten",JSON)
+end)
+if scriptdata["Repeat"] == true then
+toggle:UpdateToggle("Toggle Repeat",true)
+end
+
+toggle2 = setsection:NewDropdown("Farm Mode", "Changes between money and safe mode. May not display as saved even though it is", {"money","safe"}, function(val)
+    if val == "money" then
+        scriptdata["Mode"] = "money"
+    else
+        scriptdata["Mode"] = "safe"
+    end
+    JSON = HttpService:JSONEncode(scriptdata)
+    writefile("AutSettings.lejten",JSON)
+end)
+toggle3 = setsection:NewToggle("Unbox Crates", "Leaves the game to unbox your crates", function(val)
+    if val == false then
+        scriptdata["UnboxCrates"] = false
+    else
+        scriptdata["UnboxCrates"] = true
+    end
+    JSON = HttpService:JSONEncode(scriptdata)
+    writefile("AutSettings.lejten",JSON)
+end)
+if scriptdata["UnboxCrates"] == true then
+toggle3:UpdateToggle("Unbox Crates",true)
+end
+--------------------------
+antiafk()
+scriptdata["LastPlace"] = game.PlaceId
+JSON = HttpService:JSONEncode(scriptdata)
+writefile("AutSettings.lejten",JSON)
+if scriptdata["Enabled"] == true then
+    currenttask = task.spawn(function()
+        loop()
+    end)
+else
+    print("Random Enable Me gui bullshit pls")
+end
