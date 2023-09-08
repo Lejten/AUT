@@ -185,9 +185,11 @@ function unbox()
 }
 local invtable = game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RF"):WaitForChild("GetItems"):InvokeServer(unpack(args))
 wait(1)
+cratesfound = 0
 for i,v in pairs(invtable) do
     if v["_DisplayName"] == "1x Skin Crate" then
     print("this is a crate")
+    cratesfound = cratesfound + 1
     local args2 = {
     [1] = {
         ["UUID"] = v["_UUID"],
@@ -195,6 +197,9 @@ for i,v in pairs(invtable) do
     }
     }
     game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RE"):WaitForChild("ItemInventory"):FireServer(unpack(args2))
+    if scriptdata["Repeat"] == true then
+        teleport(wave)
+    end
     end
 end
 end
