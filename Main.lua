@@ -197,11 +197,11 @@ for i,v in pairs(invtable) do
     }
     }
     game:GetService("ReplicatedStorage"):WaitForChild("ReplicatedModules"):WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("InventoryService"):WaitForChild("RE"):WaitForChild("ItemInventory"):FireServer(unpack(args2))
-    if scriptdata["Repeat"] == true then
-        teleport(wave)
-    end
     end
 end
+    if scriptdata["Repeat"] == true and scriptdata["Enabled"] == true then
+        teleport("wave")
+    end
 end
 
 
@@ -224,7 +224,7 @@ function CheckIfFull()
             end
          return 
     else
-        if scriptdata["UnboxCrates"] == true then
+        if scriptdata["UnboxCrates"] == true and game.PlaceId == 6846458508 then
         print("unboxing")
 	    getcapacity()
 	    wait()
